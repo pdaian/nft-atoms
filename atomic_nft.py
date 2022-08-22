@@ -87,4 +87,8 @@ background = Image.open("/tmp/0.png")
 for i in range(1, depth):
     foreground = Image.open("/tmp/%d.png" % (i))
     background.paste(foreground, (0, 0), foreground)
-background.show()
+try:
+    background.show()
+except:
+    pass
+
