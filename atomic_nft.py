@@ -2,6 +2,7 @@ from PIL import Image
 import math, random
 import matplotlib.pyplot as plt
 from samila import GenerativeImage, Projection
+import os
 
 def rand_cmap(nlabels, type='bright', first_color_black=True, last_color_black=False, verbose=True):
     """
@@ -58,37 +59,41 @@ def rand_cmap(nlabels, type='bright', first_color_black=True, last_color_black=F
             randRGBcolors[-1] = [0, 0, 0]
 
     return randRGBcolors
-    
-    
-new_cmap = rand_cmap(10, type=random.choice(['soft', 'bright']), first_color_black=False, last_color_black=False, verbose=True)
-new_cmap.append(rand_cmap(10, type=random.choice(['soft', 'bright']), first_color_black=False, last_color_black=False, verbose=True))
-random.shuffle(new_cmap)
+
+def f1(x, y):
+    result = random.uniform(-1,1) * x**2  - math.sin(y**2) + abs(y-x)
+    return result
+
+def f2(x, y):
+    result = random.uniform(-1,1) * y**3 - math.cos(x**2) + 2*x
+    return result
 
 
-depth = 3
-for i in range(0, depth):
-    def f1(x, y):
-        result = random.uniform(-1,1) * x**2  - math.sin(y**2) + abs(y-x)
-        return result
-    def f2(x, y):
-        result = random.uniform(-1,1) * y**3 - math.cos(x**2) + 2*x
-        return result
+for nft_num in range(0, 200):
+    os.system("mkdir -p nfts/%d" % (nft_num))
+    new_cmap = rand_cmap(10, type=random.choice(['soft', 'bright']), first_color_black=False, last_color_black=False, verbose=True)
+    new_cmap.append(rand_cmap(10, type=random.choice(['soft', 'bright']), first_color_black=False, last_color_black=False, verbose=True))
+    random.shuffle(new_cmap)
 
-    g = GenerativeImage(f1, f2)
-    g.generate(seed=10000000 * random.random())
-    if i < 0:
-        g.plot(projection=Projection.POLAR, bgcolor="black", color=new_cmap[i])
-    else:
-        g.plot(projection=Projection.POLAR, color=new_cmap[i], bgcolor="transparent")
-    #plt.savefig('/tmp/%d.png' % (i), transparent=(i != 0))
-    g.save_image('/tmp/%d.png' % (i), depth=5)
+    depth = 3
+    for i in range(0, depth):
 
-background = Image.open("/tmp/0.png")
-for i in range(1, depth):
-    foreground = Image.open("/tmp/%d.png" % (i))
-    background.paste(foreground, (0, 0), foreground)
-try:
-    background.show()
-except:
-    pass
+        g = GenerativeImage(f1, f2)
+        seed = int(1000000000000 * random.random())
+        open("nfts/%d/%d_seed" % (nft_num ,i), "w").write(str(seed) + "\n")
+        g.generate(seed=seed)
+        if i < 0:
+            g.plot(projection=Projection.POLAR, bgcolor="black", color=new_cmap[i])
+        else:
+            g.plot(projection=Projection.POLAR, color=new_cmap[i], bgcolor="transparent")
+        #plt.savefig('/tmp/%d.png' % (i), transparent=(i != 0))
+        g.save_image('nfts/%d/%d.png' % (nft_num, i), depth=8)
 
+    background = Image.open("nfts/%d/0.png" % (nft_num))
+    for i in range(1, depth):
+        foreground = Image.open("nfts/%d/%d.png" % (nft_num, i))
+        background.paste(foreground, (0, 0), foreground)
+    background.save("nfts/%d/image.png" % (nft_num))
+
+
+    print("Finished NFT", nft_num)
