@@ -38,6 +38,7 @@ def get_image(seeds, save_to_folder, colormap):
     print("Saved complete NFT to %s" % (save_to_folder))
 
 
+# generate 1k contracts
 for nft_num in range(0, 200):
     depth = int(random.random()) * 8 + 3
     seeds = []

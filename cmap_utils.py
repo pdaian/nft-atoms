@@ -1,3 +1,4 @@
+import random
 from samila.functions import is_valid_color as is_valid_color
 
 def rand_cmap(nlabels, type='bright', verbose=True):
@@ -45,3 +46,12 @@ def rand_cmap(nlabels, type='bright', verbose=True):
     for color in randRGBcolors:
         if len(color) != 3:
             randRGBcolors.remove(color)
+
+    return randRGBcolors
+
+
+def get_random_cmap():
+    new_cmap = rand_cmap(10, type=random.choice(['soft', 'bright']), first_color_black=False, last_color_black=False, verbose=True)
+    new_cmap.append(rand_cmap(10, type=random.choice(['soft', 'bright']), first_color_black=False, last_color_black=False, verbose=True))
+    random.shuffle(new_cmap)
+    return new_cmap
