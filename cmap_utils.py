@@ -50,8 +50,8 @@ def rand_cmap(nlabels, type='bright', verbose=True):
     return randRGBcolors
 
 
-def get_random_cmap():
-    new_cmap = rand_cmap(10, type=random.choice(['soft', 'bright']))
-    new_cmap = new_cmap + rand_cmap(10, type=random.choice(['soft', 'bright']))
+def get_random_cmap(length=20):
+    new_cmap = rand_cmap(int(length/2), type=random.choice(['soft', 'bright']))
+    new_cmap = new_cmap + rand_cmap(int(length/2), type=random.choice(['soft', 'bright']))
     random.shuffle(new_cmap)
     return new_cmap

@@ -3,7 +3,7 @@ import math, random
 from samila import GenerativeImage, Projection
 import os
 from cmap_utils import get_random_cmap
-
+from constants import ELEMENTS
 
 
 def f1(x, y):
@@ -15,8 +15,7 @@ def f2(x, y):
     return result
 
 
-def get_image(seeds, save_to_folder, colormap):
-    print(colormap)
+def get_image(seeds, save_to_folder, colors):
     """ Fully deterministic function for reproducibly generating a single
         Atomic NFT PNG from a list of random seeds. """
     os.system("mkdir -p %s" % (save_to_folder))
@@ -25,8 +24,8 @@ def get_image(seeds, save_to_folder, colormap):
         seed = seeds[seed_index]
         g = GenerativeImage(f1, f2)
         g.generate(seed=seed)
-        print("Using", colormap[seed_index])
-        g.plot(projection=Projection.POLAR, color=colormap[seed_index], bgcolor="transparent")
+        print("Using", colors[seed_index])
+        g.plot(projection=Projection.POLAR, color=colors[seed_index], bgcolor="transparent")
         g.save_image('%s/seed_%d_%s.png' % (save_to_folder, seed_index, seed), depth=6)
 
     # Merge components into a single transparent PNG
@@ -38,13 +37,19 @@ def get_image(seeds, save_to_folder, colormap):
     print("Saved complete NFT to %s" % (save_to_folder))
 
 
+# hardcoded seed = deterministic generation
+main_random = random.Random(69420)
 # generate 1k contracts
 for nft_num in range(0, 200):
-    depth = int(random.random()) * 8 + 3
+    depth = int(main_random.random() * 8) + 1
+    print("Depth", depth)
     seeds = []
+    chosen_colors = []
     for i in range(0, depth):
-        seed = int(10000000000000000000000000000000000000000000000 * random.random())
+        seed = int(10000000000000000000000000000000000000000000000 * main_random.random())
         seeds.append(seed)
-    get_image(seeds, "nfts/atomic_nfts_%d" % (nft_num), get_random_cmap())
+        chosen_colors.append(random.Random(seed).choice(ELEMENTS))
+        main_random = random.Random(seed)
+    get_image(seeds, "nfts/atomic_nfts_%d" % (nft_num), chosen_colors)
 
     print("Finished NFT", nft_num)
