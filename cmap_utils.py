@@ -23,8 +23,8 @@ def rand_cmap(nlabels, type='bright', verbose=True):
     # Generate color map for bright colors, based on hsv
     if type == 'bright':
         randHSVcolors = [(np.random.uniform(low=0.0, high=1),
-                          np.random.uniform(low=0.2, high=1),
-                          np.random.uniform(low=0.9, high=1)) for i in range(nlabels)]
+                          np.random.uniform(low=0.0, high=1),
+                          np.random.uniform(low=0.0, high=1)) for i in range(nlabels)]
 
         # Convert HSV list to RGB
         randRGBcolors = []
@@ -38,9 +38,9 @@ def rand_cmap(nlabels, type='bright', verbose=True):
     if type == 'soft':
         low = 0.6
         high = 0.95
-        randRGBcolors = list(filter(is_valid_color, [(np.random.uniform(low=low, high=high),
-                          np.random.uniform(low=low, high=high),
-                          np.random.uniform(low=low, high=high)) for i in range(nlabels)]))
+        randRGBcolors = list(filter(is_valid_color, [(np.random.uniform(low=low, high=high) ** 2,
+                          np.random.uniform(low=low, high=high) ** 2,
+                          np.random.uniform(low=low, high=high) ** 2) for i in range(nlabels)]))
 
 
     for color in randRGBcolors:
@@ -52,6 +52,6 @@ def rand_cmap(nlabels, type='bright', verbose=True):
 
 def get_random_cmap(length=20):
     new_cmap = rand_cmap(int(length/2), type=random.choice(['soft', 'bright']))
-    new_cmap = new_cmap + rand_cmap(int(length/2), type=random.choice(['soft', 'bright']))
+    new_cmap = new_cmap + rand_cmap(int(length/5), type=random.choice(['soft', 'bright']))
     random.shuffle(new_cmap)
     return new_cmap

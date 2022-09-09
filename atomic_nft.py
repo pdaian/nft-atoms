@@ -19,6 +19,7 @@ def get_image(seeds, save_to_folder, colors):
     """ Fully deterministic function for reproducibly generating a single
         Atomic NFT PNG from a list of random seeds. """
     os.system("mkdir -p %s" % (save_to_folder))
+    open("%s/data" % (save_to_folder), 'w').write("%s\n%s" % (str(seeds), str(colors)))
     for seed_index in range(len(seeds)):
         # Generate component images, one for each seed. Save each component locally.
         seed = seeds[seed_index]
